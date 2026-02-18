@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Shivuu Quest ✨</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Sacramento&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#ffd6e8;
+  --lav:#dcd6ff;
+  --mint:#d7f5e6;
+  --ink:#3b2c3f;
+  --accent:#ff6fae;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:"Quicksand",sans-serif;
+  color:var(--ink);
+  height:100vh;
+  overflow:hidden;
+  background:linear-gradient(270deg,var(--pink),var(--lav),var(--mint));
+  background-size:600% 600%;
+  animation:bgMove 20s ease infinite;
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* ✨ PARTICLES */
+.particle{
+  position:fixed;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.5);
+  animation:drift linear infinite;
+}
+@keyframes drift{
+  from{transform:translateY(110vh);}
+  to{transform:translateY(-10vh);}
+}
+
+/* HUD */
+.hud{
+  position:fixed;
+  top:12px;
+  right:15px;
+  background:white;
+  padding:12px 18px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+  font-size:.9rem;
+}
+.hud div{margin:3px 0;}
+
+/* Game */
+.game{
+  max-width:900px;
+  height:100vh;
+  margin:auto;
+  padding:45px 25px;
+}
+
+.scene{
+  display:none;
+  background:rgba(255,255,255,.88);
+  border-radius:30px;
+  padding:40px;
+  box-shadow:0 30px 60px rgba(0,0,0,.15);
+  animation:fade .9s ease;
+}
+.scene.active{display:block;}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+h1{
+  font-family:"Fredoka",sans-serif;
+  font-size:2.4rem;
+  text-align:center;
+}
+
+.subtitle{
+  text-align:center;
+  font-style:italic;
+  margin-bottom:20px;
+  opacity:.8;
+}
+
+p{
+  font-size:1.1rem;
+  line-height:1.85;
+  margin-bottom:14px;
+}
+
+/* Handwritten notes */
+.note{
+  font-family:"Sacramento",cursive;
+  font-size:1.4rem;
+  color:var(--accent);
+  margin:12px 0;
+}
+
+/* Choices */
+.choices button{
+  width:100%;
+  margin-top:10px;
+  background:white;
+  border:2px solid var(--accent);
+  padding:12px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:.3s;
+}
+.choices button:hover{
+  background:var(--accent);
+  color:white;
+}
+
+/* Controls */
+.controls{
+  margin-top:20px;
+  text-align:center;
+}
+.controls button{
+  background:var(--accent);
+  border:none;
+  color:white;
+  padding:12px 32px;
+  border-radius:30px;
+  cursor:pointer;
+}
+
+/* Tap feedback */
+.pulse{
+  animation:pulse .4s ease;
+}
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.03);}
+  100%{transform:scale(1);}
+}
+
+/* Ending */
+#ending{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#ffb3d9,#c9c3ff);
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:40px;
+}
+#ending.show{display:flex;}
+</style>
+</head>
+
+<body>
+
+<!-- ✨ particles -->
+<script>
+for(let i=0;i<40;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(10+Math.random()*10)+"s";
+  p.style.opacity=Math.random()*0.5;
+  document.body.appendChild(p);
+}
+</script>
+
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2023/06/04/audio_6cce6a9cb0.mp3">
+</audio>
+
+<div class="hud">
+  <div>🤍 Comfort: <span id="comfort">0</span></div>
+  <div>😊 Joy: <span id="joy">0</span></div>
+  <div>🤝 Trust: <span id="trust">0</span></div>
+</div>
+
+<div class="game">
+
+<!-- SCENE 1 -->
+<div class="scene active">
+  <h1>Beginning 🌱</h1>
+  <div class="subtitle">existence arrives quietly</div>
+
+  <p>
+    A name appears without asking permission.  
+    It simply exists.  
+    And suddenly, the world feels slightly altered 🌍
+  </p>
+
+  <p><strong>Shivuu.</strong></p>
+
+  <div class="note">some names feel like home 🏡</div>
+
+  <div class="controls">
+    <button onclick="next('choice1',this)">Continue ➡️</button>
+  </div>
+</div>
+
+<!-- SCENE 2 -->
+<div class="scene" id="choice1">
+  <h1>A Moment ✨</h1>
+
+  <p>
+    Philosophy says we are defined by how we stay,  
+    not how we arrive.
+  </p>
+
+  <p>So… how do you stay? 🤍</p>
+
+  <div class="choices">
+    <button onclick="choose(3,1,2,'comfortPath',this)">Stay quietly 🌙</button>
+    <button onclick="choose(1,3,2,'joyPath',this)">Laugh freely 😊</button>
+  </div>
+
+  <div class="note">both are honest choices</div>
+</div>
+
+<!-- COMFORT -->
+<div class="scene" id="comfortPath">
+  <h1>Quiet Presence 🌙</h1>
+
+  <p>
+    Silence is not emptiness.  
+    It is space where trust learns to breathe 🤍
+  </p>
+
+  <div class="note">peace unlocked 🕊️</div>
+
+  <div class="controls">
+    <button onclick="next('trustTest',this)">Continue</button>
+  </div>
+</div>
+
+<!-- JOY -->
+<div class="scene" id="joyPath">
+  <h1>Shared Laughter 🌈</h1>
+
+  <p>
+    Joy does not erase uncertainty.  
+    It makes uncertainty lighter 😊
+  </p>
+
+  <div class="note">joy multiplies when shared ✨</div>
+
+  <div class="controls">
+    <button onclick="next('trustTest',this)">Continue</button>
+  </div>
+</div>
+
+<!-- TRUST -->
+<div class="scene" id="trustTest">
+  <h1>Trust 🤝</h1>
+
+  <p>
+    Trust is not a promise about tomorrow.  
+    It is a decision made *now* ⏳
+  </p>
+
+  <div class="choices">
+    <button onclick="choose(2,1,4,'finalScene',this)">Listen deeply 👂</button>
+    <button onclick="choose(1,2,4,'finalScene',this)">Speak honestly 💬</button>
+  </div>
+
+  <div class="note">this moment mattered 💫</div>
+</div>
+
+<!-- FINAL -->
+<div class="scene" id="finalScene">
+  <h1>19 February 🎂</h1>
+
+  <p>
+    A birthday is not a marker of age.  
+    It is proof of continued becoming 🌱
+  </p>
+
+  <p>Happy Birthday, Shivuu 💖</p>
+
+  <div class="controls">
+    <button onclick="endGame(this)">See Ending 🌳</button>
+  </div>
+</div>
+
+</div>
+
+<!-- ENDING -->
+<div id="ending">
+  <div>
+    <h1 id="endTitle"></h1>
+    <p id="endText"></p>
+    <p style="margin-top:25px;">❤️ Shivuu ❤️</p>
+  </div>
+</div>
+
+<script>
+document.addEventListener("click",()=>{
+  const m=document.getElementById("bgm");
+  m.volume=0.4;
+  m.play();
+},{once:true});
+
+let comfort=0, joy=0, trust=0;
+
+function haptic(el){
+  if(navigator.vibrate) navigator.vibrate(20);
+  el.classList.add("pulse");
+  setTimeout(()=>el.classList.remove("pulse"),300);
+}
+
+function choose(c,j,t,nextId,el){
+  haptic(el);
+  comfort+=c; joy+=j; trust+=t;
+  document.getElementById("comfort").textContent=comfort;
+  document.getElementById("joy").textContent=joy;
+  document.getElementById("trust").textContent=trust;
+  next(nextId);
+}
+
+function next(id,el){
+  if(el) haptic(el);
+  document.querySelectorAll(".scene").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function endGame(el){
+  haptic(el);
+  let title="", text="";
+  if(trust>=6){
+    title="🌙 Deep Trust Ending";
+    text="A bond formed by presence, not urgency.";
+  }else if(joy>=5){
+    title="🌈 Joyful Ending";
+    text="A connection that chooses light, even when uncertain.";
+  }else{
+    title="🤍 Comfort Ending";
+    text="A quiet love that feels like rest.";
+  }
+  document.getElementById("endTitle").textContent=title;
+  document.getElementById("endText").textContent=text;
+  document.getElementById("ending").classList.add("show");
+}
+</script>
+
+</body>
+</html>
